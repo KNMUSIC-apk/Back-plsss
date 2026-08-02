@@ -1,0 +1,16 @@
+# ============================================
+# Cấu hình plugin BackOnDeath
+# ============================================
+
+# Khoảng cách (tính bằng block) để kiểm tra người chơi sống gần đó
+# Nếu có bất kỳ người chơi nào khác (còn sống) nằm trong bán kính này,
+# thì /back sẽ bị vô hiệu hoá.
+radius: 10
+
+# Thời gian đếm ngược (giây) trước khi teleport người chơi về nơi chết
+countdown: 10
+
+# Hiển thị đếm ngược trên thanh hành động (action bar) hay không?
+# true  → hiển thị ở action bar
+# false → hiển thị ở chat (dòng thông báo)
+enable-action-bar: true
