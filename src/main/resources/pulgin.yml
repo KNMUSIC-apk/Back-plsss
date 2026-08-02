@@ -1,0 +1,8 @@
+name: BackOnDeath
+version: 1.0
+main: com.example.backondeath.BackOnDeath
+api-version: 1.21
+commands:
+  back:
+    description: Hồi sinh về nơi đã chết nếu được phép.
+    usage: /back
