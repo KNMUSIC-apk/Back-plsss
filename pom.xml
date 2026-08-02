@@ -17,7 +17,6 @@
     </properties>
 
     <repositories>
-        <!-- Repository của Paper -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
@@ -25,7 +24,6 @@
     </repositories>
 
     <dependencies>
-        <!-- Paper API cho 1.21.1 (tương thích 1.21.11) -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -38,7 +36,7 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <filtering>false</filtering>
                 <includes>
                     <include>plugin.yml</include>
                     <include>config.yml</include>
@@ -46,7 +44,6 @@
             </resource>
         </resources>
         <plugins>
-            <!-- Compiler Java -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -54,19 +51,6 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            <!-- Plugin jar để đảm bảo manifest (không bắt buộc) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>com.example.backondeath.BackOnDeath</Main-Class>
-                        </manifestEntries>
-                    </archive>
                 </configuration>
             </plugin>
         </plugins>
