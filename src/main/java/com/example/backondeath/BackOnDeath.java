@@ -18,18 +18,14 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
 
     private final Map<UUID, DeathData> deathDataMap = new HashMap<>();
     private final Map<UUID, Integer> taskIds = new HashMap<>();
-
-    // Các giá trị cấu hình
     private int radius;
     private int countdownSeconds;
     private boolean useActionBar;
 
     @Override
     public void onEnable() {
-        // Lưu config mặc định nếu chưa có
         saveDefaultConfig();
         reloadConfigValues();
-
         getServer().getPluginManager().registerEvents(this, this);
         getCommand("back").setExecutor(new BackCommand(this));
         getLogger().info("BackOnDeath enabled!");
@@ -43,13 +39,11 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
         getLogger().info("BackOnDeath disabled.");
     }
 
-    // Đọc lại các giá trị từ config (có thể dùng cho reload)
     public void reloadConfigValues() {
         FileConfiguration config = getConfig();
         radius = config.getInt("radius", 10);
         countdownSeconds = config.getInt("countdown", 10);
         useActionBar = config.getBoolean("enable-action-bar", true);
-        // Đảm bảo các giá trị hợp lệ
         if (radius < 1) radius = 1;
         if (countdownSeconds < 1) countdownSeconds = 1;
     }
@@ -58,16 +52,11 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         Location deathLoc = player.getLocation();
-
-        // Kiểm tra người chơi sống trong bán kính (dùng config)
         boolean hasNearby = player.getNearbyEntities(radius, radius, radius).stream()
                 .filter(e -> e instanceof Player)
                 .map(e -> (Player) e)
                 .anyMatch(p -> !p.equals(player) && p.isOnline() && p.getHealth() > 0);
-
         deathDataMap.put(player.getUniqueId(), new DeathData(deathLoc, !hasNearby));
-
-        // Huỷ bỏ tác vụ đếm ngược đang chạy (nếu có)
         cancelTask(player.getUniqueId());
     }
 
@@ -85,12 +74,9 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
             player.sendMessage("§cBạn không thể sử dụng /back lúc này.");
             return;
         }
-
-        cancelTask(uuid); // Huỷ tác vụ cũ nếu có
-
+        cancelTask(uuid);
         int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            int seconds = countdownSeconds; // dùng giá trị từ config
-
+            int seconds = countdownSeconds;
             @Override
             public void run() {
                 if (!player.isOnline()) {
@@ -98,7 +84,6 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
                     return;
                 }
                 if (seconds <= 0) {
-                    // Teleport
                     player.teleport(data.getDeathLocation());
                     player.sendMessage("§aBạn đã được hồi sinh về nơi đã chết!");
                     deathDataMap.remove(uuid);
@@ -113,8 +98,7 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
                     seconds--;
                 }
             }
-        }, 0L, 20L); // mỗi giây
-
+        }, 0L, 20L);
         taskIds.put(uuid, taskId);
     }
 
@@ -132,10 +116,5 @@ public final class BackOnDeath extends JavaPlugin implements Listener {
     public boolean isAllowed(UUID uuid) {
         DeathData data = deathDataMap.get(uuid);
         return data != null && data.isAllowed();
-    }
-
-    // Getter để BackCommand có thể lấy thời gian đếm ngược nếu muốn (không bắt buộc)
-    public int getCountdownSeconds() {
-        return countdownSeconds;
     }
 }
